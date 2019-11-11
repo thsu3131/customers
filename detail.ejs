@@ -1,0 +1,2666 @@
+<% include ../partials/private_material_header.ejs %>
+
+<link rel="stylesheet" href="./stylesheets/selectize.css" />
+<link rel="stylesheet" href="./stylesheets/selectize.bootstrap3.css" />
+<link rel="stylesheet" href="./stylesheets/selectize.default.css" />
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="card">
+			<div class="card-body">
+				<div>
+					<span class="custName h1"></span>
+					<span>
+						<button type="button" class="btn btn btn-link" style="font-weight: 600;" id="editCustName"
+							data-toggle="modal" data-target="#editCustNameModal">EDIT
+						</button>
+					</span>
+				</div>
+				<div style="margin:8px;">
+					<span data-html="true" data-toggle="tooltip" data-placement="top" title="
+								Tags help you identify your customers and group them however you want.<br />
+							Hint: Neighborhood, nickname, etc...">
+						<i class="fas fa-tags green" aria-hidden="true"></i>
+					</span>
+					<span class="editable-indicator" id="nickname" contenteditable="true"></span>
+				</div>
+				<div style="margin:8px;">
+					<i class="fas fa-phone green" aria-hidden="true"></i>
+					<span class="editable-indicator" id="phone" contenteditable="true"></span>
+				</div>
+				<div style="margin:8px;">
+					<i class="fas fa-envelope green" aria-hidden="true"></i>
+					<span class="editable-indicator" id="email" contenteditable="true"></span>
+				</div>
+				<div style="font-size:14px; margin:8px;" id="lbAppUser" hidden>
+					<span data-toggle="tooltip" data-placement="top"
+						title="Customer is using the Lawn Buddy mobile app."><img src="/img/LogoSVG.svg"
+							width="20" /></span>
+					<div style="display: inline-block;">Lawn Buddy App User</div>
+				</div>
+				<div style="font-size:14px; margin:8px;" id="lbAppInvite" hidden>
+					<button type="button" class="btn blue-background" style="color:white;" id="inviteButton">
+						<span style="margin-right:10px;"><img src="/img/LogoWhiteSVG.svg" width="20" /></span>
+						Invite to Lawn Buddy Mobile App
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="alert alert-success" role="alert" id="lbInviteSuccess" hidden>
+		<i class="fa fa-thumbs-up" aria-hidden="true"></i> Successfully invited customer to use Lawn Buddy app.
+	</div>
+	<div class="col-lg-3 col-md-6 col-sm-6">
+		<a data-toggle="modal" data-target="#messagesModal" style="cursor:pointer;">
+			<div class="card card-stats">
+				<div class="card-header card-header-info card-header-icon">
+					<div class="card-icon">
+						<i class="material-icons">mail</i>
+					</div>
+					<p class="card-category">Unread Messages</p>
+					<h3 class="card-title" id="numMessages">--</h3>
+				</div>
+				<div class="card-footer">
+					<div class="stats">
+						<i class="material-icons">local_offer</i> Just Updated
+					</div>
+				</div>
+			</div>
+		</a>
+	</div>
+	<div class="col-lg-3 col-md-6 col-sm-6">
+		<div class="card card-stats">
+			<div class="card-header card-header-warning card-header-icon">
+				<div class="card-icon">
+					<i class="material-icons">home</i>
+				</div>
+				<p class="card-category">Properties</p>
+				<h3 class="card-title" id="numProperties">--</h3>
+			</div>
+			<div class="card-footer">
+				<div class="stats">
+					<i class="material-icons">local_offer</i> Just Updated
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-3 col-md-6 col-sm-6">
+		<div class="card card-stats">
+			<div class="card-header card-header-success card-header-icon">
+				<div class="card-icon">
+					<i class="material-icons">build</i>
+				</div>
+				<p class="card-category">Open Jobs</p>
+				<h3 class="card-title" id="numJobs">--</h3>
+			</div>
+			<div class="card-footer">
+				<div class="stats">
+					<i class="material-icons">local_offer</i> Just Updated
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-3 col-md-6 col-sm-6">
+		<div class="card card-stats">
+			<div class="card-header card-header-danger card-header-icon">
+				<div class="card-icon">
+					<i class="material-icons">attach_money</i>
+				</div>
+				<p class="card-category">Overdue Invoices</p>
+				<h3 class="card-title" id="numInvoices">--</h3>
+			</div>
+			<div class="card-footer">
+				<div class="stats">
+					<i class="material-icons">local_offer</i> Just Updated
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-6 col-md-6 col-sm-6">
+		<div class="card">
+			<div class="card-header card-header-danger">
+				<h4 class="card-title">Auto Invoicing</h4>
+				<p class="card-category">Send invoices automatically</p>
+			</div>
+			<div class="card-body">
+				<div class="form-row">
+					<div class="form-check">
+						<div class="form-group">
+							<label for="autoInvoiceSetting">Send invoices automatically:</label>
+							<select class="form-control" id="autoInvoiceSetting">
+								<option value="perJob">When a job is completed</option>
+								<option value="firstOfMonth">On the first of the month (for all past completed jobs)
+								</option>
+								<option value="fifteenthOfMonth">On the 15th of the month (for all past completed jobs)
+								</option>
+								<option value="none">Never (Manually create invoices)</option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- EIDT CUSTOMER NOTES -->
+	<div class="col-lg-6 col-md-6 col-sm-6">
+		<div class="card">
+			<div class="card-header card-header-success">
+				<h4 class="card-title">Customer Notes</h4>
+				<label for="editCustomerNote"><span style="color:white">Keep track of instructions, details, etc
+					</span></label>
+				<p class="card-category"></p>
+			</div>
+			<div class="card-body" style="max-height: 125px; overflow-y: scroll">
+				<div class="container">
+					<div class="d-flex">
+						<textarea style="border: none;overflow:hidden" class="" id="textarea-customer-notes-id" rows="5"
+							cols="100" placeholder="Type a note..."></textarea>
+
+						<div class="ml-auto pt-5">
+							<span class="toggle-click-save-customer-notes" style="display:none">
+								<button type="button" class="card-link save-customer-notes btn" style="width: 130px"><i
+										class="fas fa-save"></i> &nbsp Save</button>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-12">
+		<div class="card">
+			<div class="card-header card-header-warning">
+				<h4 class="card-title">Properties
+					<button type="button" class="btn btn-fab btn-lg btn-fab-mini btn-round btn-warning pull-right"
+						data-toggle="modal" data-target="#propertyModal">
+						<i class="material-icons">add</i>
+					</button>
+				</h4>
+			</div>
+			<div class="card-body">
+				<table class="table table-condensed" id="proptable">
+					<thead>
+						<tr>
+							<th>Address</th>
+							<th class="center-text">Property Notes</th>
+							<th class="center-text">Standard Rate</th>
+							<th class="center-text">Lot Size (sq/ft)
+								<span data-toggle="tooltip" data-placement="top"
+									title="When available this value will be pulled from Zillow, based on the data available. To edit, click on the value.">
+									<i class="fas fa-question-circle green"></i>
+								</span>
+							</th>
+							<th class="center-text" style="width:130px;">Actions</th>
+						</tr>
+					</thead>
+					<tbody id="proptablebody">
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-12">
+		<div class="card">
+			<div class="card-header card-header-success">
+				<h4 class="card-title">Jobs
+					<button type="button" class="btn btn-fab btn-lg btn-fab-mini btn-round btn-success pull-right"
+						data-toggle="modal" data-target="#newJobModal">
+						<i class="material-icons">add</i>
+					</button>
+					<div class="nav-tabs-navigation float-right">
+						<div class="nav-tabs-wrapper">
+							<ul class="nav nav-tabs" data-tabs="tabs">
+								<li class="nav-item">
+									<a class="nav-link active" href="#openJobs" data-toggle="tab">
+										OPEN
+										<div class="ripple-container"></div>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" href="#completeJobs" data-toggle="tab">
+										COMPLETED
+										<div class="ripple-container"></div>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" href="#canceledJobs" data-toggle="tab">
+										CANCELED
+										<div class="ripple-container"></div>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</h4>
+			</div>
+			<div class="card-body" style="max-height: 500px; overflow-y: scroll">
+				<div class="tab-content">
+					<div class="tab-pane" id="completeJobs">
+						<table class="table" id="jobstable">
+							<thead>
+								<tr>
+									<th>Job Description</th>
+									<th class="center-text">Address</th>
+									<th class="center-text">Price</th>
+									<th class="center-text">Dates</th>
+									<th class="center-text" style="width:130px;">Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+					<div class="tab-pane" id="canceledJobs">
+						<table class="table" id="jobstable">
+							<thead>
+								<tr>
+									<th>Job Description</th>
+									<th class="center-text">Address</th>
+									<th class="center-text">Price</th>
+									<th class="center-text">Due Date</th>
+									<th class="center-text" style="width:130px;">Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+					<div class="tab-pane active" id="openJobs">
+						<table class="table" id="jobstable">
+							<thead>
+								<tr>
+									<th>Job Description</th>
+									<th class="center-text">Address</th>
+									<th class="center-text">Price</th>
+									<th class="center-text">Due Date</th>
+									<th class="center-text" style="width:130px;">Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-12">
+		<div class="card">
+			<div class="card-header card-header-danger">
+				<h4 class="card-title">Invoices
+					<button class="btn btn-fab btn-lg btn-fab-mini btn-round btn-danger pull-right" id="newInvoice">
+						<i class="material-icons">add</i>
+					</button>
+					<div class="nav-tabs-navigation float-right">
+						<div class="nav-tabs-wrapper">
+							<ul class="nav nav-tabs" data-tabs="tabs">
+								<li class="nav-item">
+									<a class="nav-link active" href="#unpaidInvoices" data-toggle="tab">
+										UNPAID
+										<div class="ripple-container"></div>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" href="#paidInvoices" data-toggle="tab">
+										PAID
+										<div class="ripple-container"></div>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</h4>
+			</div>
+			<div class="card-body" style="max-height: 500px; overflow-y: scroll">
+				<div class="tab-content">
+					<div class="tab-pane" id="paidInvoices">
+						<table class="table" id="invtable">
+							<thead>
+								<tr>
+									<th>Invoice #</th>
+									<th class="center-text">Total Due</th>
+									<th class="center-text">Due Date</th>
+									<th class="center-text" style="width:130px;">Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+					<div class="tab-pane active" id="unpaidInvoices">
+						<table class="table" id="invtable">
+							<thead>
+								<tr>
+									<th>Invoice #</th>
+									<th class="center-text">Total Due</th>
+									<th class="center-text">Due Date</th>
+									<th class="center-text" style="width:130px;">Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- EDIT cust NAME Modal -->
+<div class="modal fade col-xs-12" id="editCustNameModal" tabindex="-1" role="dialog"
+	aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button> -->
+				<h5 class="modal-title">Edit Customer Name</h5>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="form-group">
+							<label for="editCustNameFirst">First Name</label>
+							<input type="text" class="form-control" id="editCustNameFirst" style="max-width:250px;">
+						</div>
+					</div>
+					<div class="col-sm-12">
+						<div class="form-group">
+							<label for="editCustNameLast">Last Name</label>
+							<input type="text" class="form-control" id="editCustNameLast" style="max-width:250px;">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal"
+					id="editCustNameCancel">Cancel</button>
+				<button type="button" class="btn btn-primary" id="editCustNameSave">Save</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- MESSAGES Modal -->
+<div class="modal fade col-xs-12" id="messagesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+	aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Messages -
+					<span class="custName"></span>
+				</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body" style="padding-bottom: 0px;">
+				<div class="row">
+					<ul class="list-group col-lg-12  messages-list"
+						style="height: 400px; overflow: auto; color:#555; margin-bottom: 0px;">
+					</ul>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<form class="form-inline">
+					<div class="form-group mx-sm-3 mb-2" style="display:inline;">
+						<input type="text" class="form-control" id="messageText" placeholder="Message...">
+					</div>
+					<button type="button" class="btn btn-primary btn-sm  mb-2" id="sendMessage">Send</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- PROPERTY Modal -->
+<div class="modal fade col-xs-12" id="propertyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+	aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button> -->
+				<h5 class="modal-title">Add a property</h5>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="form-group">
+							<label for="address">Street Address</label>
+							<input type="text" class="form-control" id="address" style="max-width:300px;">
+						</div>
+					</div>
+					<div class="col-sm-12">
+						<div class="form-group">
+							<label for="city">City</label>
+							<input type="text" class="form-control" id="city" style="max-width:200px;">
+						</div>
+					</div>
+					<div class="col-sm-3">
+						<div class="form-group">
+							<label for="state">State</label>
+							<input type="text" class="form-control" id="state" style="max-width:150px;">
+						</div>
+					</div>
+					<div class="col-sm-3">
+						<div class="form-group">
+							<label for="zip">Zip</label>
+							<input type="text" class="form-control" id="zip" style="max-width:150px;">
+						</div>
+					</div>
+				</div>
+				<input type="hidden" id="lat">
+				<input type="hidden" id="lng">
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal" id="propertyCancel">Cancel</button>
+				<button type="button" class="btn btn-primary" id="propertySave">Save</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- DELETE PROPERTY Modal -->
+<div class="modal fade" id="confirmDeleteProperty" role="dialog" aria-hidden="true" tabindex="-1" data-toggle="modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Delete This Property?</h4>
+			</div>
+			<div class="modal-body">
+				<p>Are you sure?</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-danger" id="confirmDeletePropertyButton">Delete</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- JOB Modal -->
+<div class="modal fade col-xs-12" id="newJobModal" tabindex="-1" role="dialog" aria-labelledby="New Job Button"
+	aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">New Job</h5>
+			</div>
+			<div class="modal-body">
+				<form data-toggle="validator" role="form" id="jobForm">
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="form-group">
+								<div class="btn-group d-flex justify-content-center">
+									<button type="button" id="addressDropdown" class="btn btn-default dropdown-toggle"
+										data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										Choose an address...
+										<span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu" id="addressList" style="height: 368px; overflow: auto;">
+
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="form-group">
+								<label for="type">Job Description</label>
+								<select class="form-control" id="description"
+									placeholder="Choose a job description or type a new one..."></select>
+								<!-- <input type="text" class="form-control" id="description" placeholder="Choose a job description or type a new one..." style="max-width:300px;" required> -->
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<div class="form-group">
+								<label for="amount">Price</label>
+								<div class="input-group">
+									<span class="input-group-addon">$</span>
+									<input type="number" class="form-control" step="0.01" id="amount"
+										style="max-width:140px;" required>
+									<!-- <span class="input-group-addon">.00</span> -->
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<div class="form-group">
+								<label for="date">Date</label>
+								<div class='input-group date datetime' id='datetimepickerJob'>
+									<input size="10" type="text" value="" class="form-control"
+										id="datetimepickerJobInput" style="max-width:180px;" placeholder="pick a date"
+										required>
+									<span class="input-group-addon">
+										<i class="far fa-calendar-alt"></i>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row" id="recurringgroup">
+						<div class='col-sm-12'>
+							<div class="form-check">
+								<label class="form-check-label">
+									<input class="form-check-input" type="checkbox" value="" id="recurringCheck"
+										style="display:none">
+									Set to Recurring
+									<span class="form-check-sign">
+										<span class="check"></span>
+									</span>
+								</label>
+							</div>
+						</div>
+						<div class='col-sm-6'>
+							<div class="form-group">
+								<select class="form-control frequency" id="frequencyDropdown">
+									<option value='1|0'>Weekly on Sunday</option>
+									<option value='1|1'>Weekly on Monday</option>
+									<option value='1|2'>Weekly on Tuesday</option>
+									<option value='1|3'>Weekly on Wednesday</option>
+									<option value='1|4'>Weekly on Thursday</option>
+									<option value='1|5'>Weekly on Friday</option>
+									<option value='1|6'>Weekly on Saturday</option>
+									<option value='2|0'>Every 2 weeks on Sunday</option>
+									<option value='2|1'>Every 2 weeks on Monday</option>
+									<option value='2|2'>Every 2 weeks on Tuesday</option>
+									<option value='2|3'>Every 2 weeks on Wednesday</option>
+									<option value='2|4'>Every 2 weeks on Thursday</option>
+									<option value='2|5'>Every 2 weeks on Friday</option>
+									<option value='2|6'>Every 2 weeks on Saturday</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-primary" id="newJobSave">Save</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- EDIT RECURRING JOB Modal -->
+<div class="modal fade" id="editRecurringJob" role="dialog" aria-hidden="true" tabindex="-1" data-toggle="modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h5 class="modal-title">Edit Job</h5>
+			</div>
+			<div class="modal-body">
+				<p>This is a recurring job. I would like to modify:</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success" id="modifyAllButton">All future occurances</button>
+				<button type="button" class="btn btn-primary" id="modifyOneButton">Only this date</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- CANCEL JOB Confirm Modal -->
+<div class="modal fade" id="confirmCancelJob" role="dialog" aria-hidden="true" tabindex="-1" data-toggle="modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Cancel This Job?</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			</div>
+			<div class="modal-body">
+				<p>Are you sure?</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+				<button type="button" class="btn btn-danger" id="confirmCancelJobButton">Yes</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- CANCEL RECURRING JOB Modal -->
+<div class="modal fade" id="cancelRecurringJob" role="dialog" aria-hidden="true" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Cancel Job</h5>
+			</div>
+			<div class="modal-body">
+				<p>This is a recurring job. I would like to cancel:</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success" id="cancelAllButton">All future occurances</button>
+				<button type="button" class="btn btn-primary" id="cancelOneButton">Only this date</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Confirm Delete Item -->
+<div class="modal fade" id="confirmDeleteInvoice" role="dialog" aria-hidden="true" tabindex="-1" data-toggle="modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">Delete This Invoice?</h4>
+			</div>
+			<div class="modal-body">
+				<p>Are you sure?</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-danger" id="confirmDeleteInvoiceButton">Delete</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- EDIT PROPERTY NOTES MODAL -->
+<div class="modal fade bd-example-modal-lg" id="editPropertyNotesModal" role="dialog" aria-hidden="true" tabindex="-1"
+	data-toggle="modal">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title"><span class="edit-property-notes-header"></span></h4>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			</div>
+			<div class="modal-body" id='property-id'>
+				<div class="container">
+					<div class="row">
+						<textarea style="border: none;" class="" id="textarea-property-notes-id" rows="5" cols="100"
+							placeholder="Type a note..."></textarea>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<span>
+					<button type="button" class="btn btn-default save-property-notes" data-dismiss="modal"><i
+							class="fas fa-save"></i> &nbsp Save</button>
+				</span>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script src="../vendor/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<%- mapsAPIKey %>&libraries=places">
+</script>
+<script src="../js/selectize.min.js"></script>
+
+<script>
+	$('.navbar-wrapper').text('Customer Detail');
+
+	var firebaseUserId; // = "w283mtPOqNXwvrfe56rdixn75If2";
+	var customerId = '<%- id %>';
+	var customerName = '';
+	var chatId;
+	var lbCustId;
+	var lbChatId;
+	var providerName;
+
+	var invoiceNumber = '1000';
+
+	firebase.auth().onAuthStateChanged(function (user) {
+		if (user) {
+			// User is signed in.
+			firebaseUserId = user.uid;
+
+			chatId = customerId + '_' + firebaseUserId;
+
+			startDatabaseQueries();
+			setupJobTypeOptions();
+		} else {
+			// No user is signed in.
+			console.log('no user logged in');
+		}
+	});
+
+	$(document).ready(function () {
+
+		//opt in to tooltips
+		$('[data-toggle="tooltip"]').tooltip();
+
+		$('body').tooltip({
+			selector: '[rel=tooltip]'
+		});
+
+		$('#propertyModal').on('shown.bs.modal', function (e) {
+			// do something when it opens
+			$("#propertyModal").find('#address').focus();
+		});
+
+		$('#propertyModal').on('hidden.bs.modal', function (e) {
+			// do something when it closes
+			propertyToEdit = undefined;
+			clearPropertyModal();
+
+			$("#propertyModal").find('#address').off("focus");
+		});
+
+		$('#newJobModal').on('hidden.bs.modal', function () {
+			// do something when it closes
+			jobToEdit = undefined;
+			recurringJobToEdit = undefined;
+			clearJobModal();
+		});
+
+		$('#confirmCancelJob').on('hidden.bs.modal', function () {
+			// do something when it closes
+			jobToCancel = undefined;
+			jobToCancelCustId = undefined;
+		});
+
+		$('#frequencyDropdown').hide();
+
+		$('#jobForm').validator();
+	});
+
+	function setupJobTypeOptions() {
+
+		var jobTypeOptions = [];
+
+		var providerJobTypesRef = firebase.database().ref('providerJobTypes').child(firebaseUserId).orderByKey();
+		providerJobTypesRef.on('value', function (snapshot) {
+			console.log('customer info gathered');
+
+			jobTypeOptions = [{
+				name: 'Lawn Mowing'
+			},
+			{
+				name: 'Landscaping'
+			},
+			{
+				name: 'Yard Cleanup'
+			},
+			{
+				name: 'Sprinkler System'
+			}
+			];
+
+			snapshot.forEach(function (childSnapshot) {
+				jobTypeOptions.push({
+					name: childSnapshot.key
+				});
+			});
+
+			jobTypeOptionsSelectize[0].selectize.addOption(jobTypeOptions);
+		});
+	}
+
+	function startDatabaseQueries() {
+
+		var providerCompanyRef = firebase.database().ref('providerCompany').child(firebaseUserId);
+		providerCompanyRef.on('value', function (snapshot) {
+			if (snapshot.exists()) {
+
+				var company = snapshot.val();
+
+				providerName = company.name;
+			}
+		});
+
+		var customerRef = firebase.database().ref('providerCustomers').child(firebaseUserId).child(customerId);
+		customerRef.on('value', function (snapshot) {
+
+			var collectCompletedJobs = [];
+			var collectOpenJobs = [];
+			var collectCanceledJobs = [];
+			var OnDemandUsers = [];
+
+			snapshot.child("lawnBuddyAppUsers").forEach(function (snapshott) {
+				OnDemandUsers.push(snapshott.key);
+			});
+
+			var jobsProviderRef = firebase.database().ref("providerCustomerJobs").child(firebaseUserId).child(customerId).orderByChild("complete");
+
+			jobsProviderRef.on("value", function (customerjobsref) {
+
+				collectCompletedJobs = [];
+				collectOpenJobs = [];
+				collectCanceledJobs = [];
+
+				$('#numJobs').text(customerjobsref.numChildren());
+
+				$('#completeJobs tbody tr').remove();
+				$('#canceledJobs tbody tr').remove();
+				$('#openJobs tbody tr').remove();
+
+				var OnDemandCompletedJobsRef = firebase.database().ref("completedRequests").child("noMarket").child(firebaseUserId);
+				OnDemandCompletedJobsRef.on("value", function (snapshot) {
+					collectCompletedJobs = [];
+					$('#completeJobs tbody tr').remove();
+
+					snapshot.forEach(function (childsnapshot) {
+
+						var reqKey = childsnapshot.key;
+						var req = childsnapshot.val();
+
+						var found = OnDemandUsers.find(function (element) {
+
+							if (element === req.user) {
+								collectCompletedJobs.push({
+									job: req,
+									jobid: reqKey,
+									customerName: req.name,
+									description: req.type,
+									odJob: true,
+									amount: req.amount,
+									scheduledDate: req.scheduledDate,
+									address: req.address,
+									city: req.city,
+									state: req.state,
+									zip: req.zip,
+									isOnDemandCompleted: true,
+									completeDate: req.completionDate
+
+								});
+
+								return true;
+							}
+						});
+					});
+					customerjobsref.forEach(function (childsnapshot) {
+						var jobKey = childsnapshot.key;
+						var job = childsnapshot.val();
+
+						job['jobid'] = jobKey;
+
+						if (job.complete === true && job.complete) {
+
+							collectCompletedJobs.push(job);
+						}
+
+					});
+
+					collectCompletedJobs.sort(completedCompare);
+
+					for (let i = 0; i < collectCompletedJobs.length; i++) {
+						$('#completeJobs').find("tbody").append(createJobElement(collectCompletedJobs[i]));
+					}
+
+				});
+
+				var OnDemandWorkingJobsRef = firebase.database().ref("workingRequests").child("noMarket").child(firebaseUserId);
+				OnDemandWorkingJobsRef.on("value", function (snapshot) {
+					collectOpenJobs = [];
+					$('#openJobs tbody tr').remove();
+
+					snapshot.forEach(function (childsnapshot) {
+						var reqKey = childsnapshot.key;
+						var req = childsnapshot.val();
+
+						var found = OnDemandUsers.find(function (element) {
+							if (element === req.user) {
+								collectOpenJobs.push({
+									jobid: reqKey,
+									customerName: req.name,
+									description: req.type,
+									odJob: true,
+									address: req.address,
+									city: req.city,
+									zip: req.zip,
+									state: req.state,
+									amount: req.amount,
+									scheduledDate: req.scheduledDate
+								});
+
+								return true;
+							}
+						});
+					});
+
+					customerjobsref.forEach(function (childsnapshot) {
+						var jobKey = childsnapshot.key;
+						var job = childsnapshot.val();
+
+						job['jobid'] = jobKey;
+
+						if (job.complete !== true && job.canceled !== true) collectOpenJobs.push(job);
+
+					});
+
+					collectOpenJobs.sort(openCompare);
+
+					for (let i = 0; i < collectOpenJobs.length; i++)
+						$('#openJobs').find("tbody").append(createJobElement(collectOpenJobs[i]));
+
+				});
+
+				customerjobsref.forEach(function (childsnapshot) {
+					var jobKey = childsnapshot.key;
+					var job = childsnapshot.val();
+
+					job['jobid'] = jobKey;
+
+					if (job.canceled === true) collectCanceledJobs.push(job);
+
+				});
+
+				collectCanceledJobs.sort(completedCompare);
+
+				for (let i = 0; i < collectCanceledJobs.length; i++)
+					$('#canceledJobs').find("tbody").append(createJobElement(collectCanceledJobs[i]));
+			});
+
+			if (snapshot.val()) {
+				var customer = snapshot.val();
+
+				if (customer.lbUserId) {
+					lbCustId = customer.lbUserId;
+					lbChatId = customer.lbUserId + '_' + firebaseUserId;
+				}
+
+				if (customer.lawnBuddyAppUsers) {
+					$('#lbAppUser').prop('hidden', false);
+					$('#lbAppInvite').prop('hidden', true);
+				} else {
+					$('#lbAppUser').prop('hidden', true);
+					$('#lbAppInvite').prop('hidden', false);
+				}
+
+				customerName = (customer.firstName || '') + ' ' + (customer.lastName || '');
+
+				$('#editCustNameModal').find('#editCustNameFirst').val(customer.firstName || '');
+				$('#editCustNameModal').find('#editCustNameLast').val(customer.lastName || '');
+
+				$('.custName').text(customerName);
+
+				if (customer.phone && customer.phone.length > 0) {
+					$('#phone').text(customer.phone);
+				} else {
+					$('#phone').text('Click to add phone number...');
+				}
+
+				if (customer.email && customer.email.length > 0) {
+					$('#email').text(customer.email);
+				} else {
+					$('#email').text('Click to add email...');
+				}
+
+				if (customer.nickname && customer.nickname.length > 0) {
+					$('#nickname').text(customer.nickname);
+				} else {
+					$('#nickname').text('Click to add tag ...');
+				}
+
+				if (customer.autoInvoiceSetting) {
+					$("#autoInvoiceSetting").val(customer.autoInvoiceSetting);
+				} else {
+					$("#autoInvoiceSetting").val('perJob');
+				}
+
+				$(".card").find("#textarea-customer-notes-id").html(customer.customerNotes);
+			}
+
+		});
+
+
+		var customerPropertiesRef = firebase.database().ref('providerCustomerProperties').child(firebaseUserId).child(
+			customerId).orderByChild('address');
+		customerPropertiesRef.on('value', function (snapshot) {
+			console.log('customer info gathered');
+
+			$('#numProperties').text(snapshot.numChildren());
+
+			$('#proptable tbody tr').remove()
+
+			snapshot.forEach(function (childSnapshot) {
+				$('#proptable').find('tbody').append(createPropertyElement(childSnapshot));
+
+				var customer = childSnapshot.val();
+
+				var html = '<li>' +
+					'<a href="#" class="jobAddressOption" id="' + childSnapshot.key + '">' +
+					'<span class="tab">' + customer.address + '</span>' +
+					'</a>' +
+					'</li>';
+
+				$("#addressList").append(html);
+
+			});
+		});
+
+		var invoicesRef = firebase.database().ref('providerCustomerInvoices').child(firebaseUserId).orderByChild(
+			"customerId")
+			.equalTo(customerId);;
+		invoicesRef.on('value', function (snapshot) {
+			console.log('customer info gathered');
+
+			$('#numInvoices').text(snapshot.numChildren());
+
+			// $('#invtable tbody tr').remove();
+			$('#paidInvoices tbody tr').remove()
+			$('#unpaidInvoices tbody tr').remove()
+
+
+			snapshot.forEach(function (childSnapshot) {
+				// $('#invtable').find('tbody').append(createInvoiceElement(childSnapshot));
+
+				if (childSnapshot.child("paid").val() === true)
+					$('#paidInvoices').find('tbody').append(createInvoiceElement(childSnapshot));
+				else if (childSnapshot.child("paid").val() === null)
+					$('#unpaidInvoices').find('tbody').append(createInvoiceElement(childSnapshot));
+				var nextInvoiceNumberInt = parseInt(invoiceNumber);
+
+				if (nextInvoiceNumberInt <= parseInt(childSnapshot.key)) {
+					nextInvoiceNumberInt = parseInt(childSnapshot.key) + 1;
+				}
+
+				invoiceNumber = nextInvoiceNumberInt.toString();
+			});
+		});
+
+		var threadRef = firebase.database().ref('chats/' + chatId + '/messages').orderByChild('sent');
+
+		threadRef.on('child_added', function (snapshot) {
+
+			var obj = snapshot.val();
+			var text = obj.text;
+			var user = obj.user;
+
+			var messagesElement = document.getElementsByClassName('messages-list')[0];
+
+			messagesElement.appendChild(createMessageElement(user, text, obj.sent));
+
+			console.log($('.messages-list').height());
+
+			// $('.messages-list').scrollTop(40000);
+
+			$(".messages-list").animate({
+				scrollTop: $('.messages-list').height() + 1000000
+			}, 100);
+		});
+
+		function completedCompare(a, b) {
+
+			//SORT COMPLETE JOBS BY DATE, THEN BY SCHEDULED DATE
+			var aCompleteDate = a.completeDate ? a.completeDate : 0;
+			var bCompleteDate = b.completeDate ? b.completeDate : 0;
+			var aScheduledDate = a.scheduledDate ? a.scheduledDate : 0;
+			var bScheduledDate = b.scheduledDate ? b.scheduledDate : 0;
+
+			if (aCompleteDate) {
+				if (bCompleteDate && aCompleteDate > bCompleteDate) {
+					return -1;
+				}
+				return 1;
+			}
+
+			if (aScheduledDate > bScheduledDate) {
+				return -1;
+			}
+
+			if (aScheduledDate < bScheduledDate) {
+				return 1;
+			}
+			return 0;
+		}
+
+		function openCompare(a, b) {
+			//SORT COMPLETE JOBS BY DATE, THEN BY SCHEDULED DATE
+			var aScheduledDate = a.scheduledDate ? a.scheduledDate : 0;
+			var bScheduledDate = b.scheduledDate ? b.scheduledDate : 0;
+			if (aScheduledDate < bScheduledDate) {
+				return -1;
+			}
+
+			if (aScheduledDate > bScheduledDate) {
+				return 1;
+			}
+
+			return 0;
+		}
+	}
+
+	function createPropertyElement(childSnapshot) {
+
+		var property = childSnapshot.val();
+
+		// DISPLAY PREVIEW PROPERTY NOTES
+		if (property.propertyNotes) {
+			var propertyNotesFirstLine = property.propertyNotes.split('\n')[0];
+			var lenPropertyNotes = propertyNotesFirstLine.length;
+
+			var viewPropertyNotes = "";
+
+			if (lenPropertyNotes <= 25) {
+				viewPropertyNotes = propertyNotesFirstLine;
+
+			} else {
+				for (let i = 0; i < 25; i++)  viewPropertyNotes += propertyNotesFirstLine[i];
+				viewPropertyNotes += "..."
+			}
+
+		} else {
+			viewPropertyNotes = "Click to add property notes...";
+		}
+
+		var stdRate = '--';
+
+		if (property.standardRate) {
+			stdRate = '$' + property.standardRate;
+		}
+
+		var lotSize = '--';
+
+		if (property.lotSize) {
+			lotSize = property.lotSize + ' sq/ft';
+		}
+
+		var googleMapsLink = 'https://www.google.com/maps/search/?api=1&query=' + property.address + ' ' + property.city +
+			", " + property.state + " " + property.zip;
+
+		var html =
+			'<tr id="' + childSnapshot.key + '" address="' + property.address + '" rate="' + property.standardRate + '">' +
+			'<td>' + property.address + ", " + property.city + ", " + property.state + " " + property.zip + ' <a href="' +
+			googleMapsLink + '" target="_blank"><i class="fa fa-map-marker green" aria-hidden="true"></i></a></td>' +
+
+			// PROPERTY NOTES
+			'<td class="center-text">' +
+			'<a href="#"  class="edit-property-notes-modal-button" data-toggle="modal" data-target="#editPropertyNotesModal" style="color: black">' +
+			'<span class="editable-indicator">' + viewPropertyNotes +
+			'</span></a></td>' +
+			'<td  class="center-text"><span class="stdRate editable-indicator" contenteditable="true">' + stdRate +
+			'</span></td>' +
+			'<td class="center-text"><span class="lotSize editable-indicator" contenteditable="true">' + lotSize +
+			'</span></td>' +
+			'<td class="center-text">' +
+			'<div class="btn-group">' +
+			'<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
+			'Action <span class="caret"></span>' +
+			'</button>' +
+			'<ul class="dropdown-menu">' +
+			'<li><a href="#" class="edit">Edit</a></li>' +
+			'<li role="separator" class="divider"></li>' +
+			'<li><a href="#" class="newJob" data-toggle="modal" data-target="#newJobModal">New Job</a></li>' +
+			'<li role="separator" class="divider"></li>' +
+			'<li><a href="#" class="delete">Delete Property</a></li>' +
+			'</ul>' +
+			'</div>' +
+			'</td>' +
+			'</tr>';
+
+		return html;
+	}
+
+	function createJobElement(job) {
+
+		var scheduledDate = new Date(job.scheduledDate * 1000);
+		// scheduledDate = new Date(scheduledDate.getFullYear(), scheduledDate.getMonth(), scheduledDate.getDate());
+
+		var scheduledDateString = $.format.date(new Date(scheduledDate), "E, M/d/yyyy");
+
+		var today = new Date();
+		today = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+		if (scheduledDate.getMonth() == today.getMonth() && scheduledDate.getDate() == today.getDate() && scheduledDate
+			.getFullYear() ==
+			today.getFullYear()) {
+			//today
+			scheduledDateString = 'Today';
+		}
+
+		//IF COMEPLETE, ADD COMPLETE DATE
+		if (job.complete == true && job.completeDate || job.isOnDemandCompleted == true && job.isOnDemandCompleted) {
+
+			var completeDate = new Date(job.completeDate * 1000);
+			scheduledDateString = '<i class="fas fa-calendar-alt"></i> ' + scheduledDateString + '<div><i class="fas fa-check-circle"></i> ' + $.format.date(completeDate, "E, M/d/yyyy") + '</div>';
+		}
+
+		var OnDemandIcon = "";
+		var recurringHTML = '';
+		var statusHTML = '';
+		var actionButtonHTML = '<button type="button" class="btn btn-default dropdown-toggle isCompleted-action" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
+			'Action <span class="caret"></span>' + '</button>';
+
+		if (job.recurring && job.recurring == true) {
+			var freq, day, frequency;
+			var weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+			var jobFreq = ['', 'week', '2 weeks'];
+
+			var frequency = 'Recurs every ' + jobFreq[job.frequency] + ' on ' + weekday[job.dayOfWeek];
+			recurringHTML = '<span class="badge blue-background" rel="tooltip" data-toggle="tooltip" data-placement="top" title="' +
+				frequency +
+				'">' +
+				'<i class="far fa-sync-alt text-white"></i>' +
+				'</span>';
+		}
+
+		var completeHTML = '<li><a href="#" class="markComplete">Mark Complete</a></li>';
+		var cancelHTML = '<li role="separator" class="divider"></li>' +
+			'<li><a href="#" class="cancel">Cancel Job</a></li>';
+		var editHTML = '<li><a href="#" class="edit">Edit</a></li>';
+		var completeOnDemandHTML = "";
+
+		if (job.complete && job.complete == true) {
+			statusHTML = ' <span class="badge green-background text-white">COMPLETED</span>';
+			completeHTML = '<li><a href="#" class="incomplete">Mark Incomplete</a></li>';
+			editHTML = '';
+			cancelHTML = '';
+
+		} else if (job.canceled && job.canceled == true) {
+			statusHTML = ' <span class="badge grey-background text-white">CANCELED</span>';
+			cancelHTML = //'<li role="separator" class="divider"></li>' +
+				'<li><a href="#" class="uncancel">Uncancel Job</a></li>';
+			completeHTML = '';
+			editHTML = '';
+
+		} else if (scheduledDate < today) {
+			statusHTML = ' <span class="badge red-background text-white">OVERDUE</span>';
+		}
+
+		if (job.odJob && job.odJob === true) {
+
+			OnDemandIcon = '<span data-toggle="tooltip" rel="tooltip" data-placement="top" title="On Demand Job"><img src="/img/LogoSVG.svg"width="20"/></span>';
+
+			if (job.isOnDemandCompleted === true) {
+				actionButtonHTML = '<button type="button" class="btn btn-default dropdown-toggle isCompleted-action" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>' +
+					'Action <span class="caret"></span>' +
+					'</button>';
+
+				statusHTML = ' <span class="badge green-background text-white">COMPLETED</span>';
+				editHTML = '';
+				cancelHTML = '';
+				completeOnDemandHTML = "";
+				completeHTML = ""
+
+			} else {
+
+				// statusHTML = ' <span class="badge green-background">OnDemand</span>';
+				editHTML = '';
+				cancelHTML = '';
+				completeOnDemandHTML = "<li><a href='#' class='ondemandcomplete'>Mark Complete</a></li>";
+				completeHTML = ""
+
+			}
+		}
+
+		var googleMapsLink = 'https://www.google.com/maps/search/?api=1&query=' + job.address + ' ' + job.city + ", " + job
+			.state +
+			" " + job.zip;
+
+		var html =
+			'<tr id="' + job.jobid + '">' +
+			'<td>' + recurringHTML + ' ' + OnDemandIcon + "&nbsp" + job.description + ' ' + statusHTML + '</td>' +
+			'<td class="center-text" id="address">' + job.address + ' <a href="' + googleMapsLink +
+			'" target="_blank"><i class="fa fa-map-marker green" aria-hidden="true"></i></a></td>' +
+			'<td class="center-text">$' + job.amount + '</td>' +
+			'<td class="center-text">' + scheduledDateString + '</td>' +
+			'<td class="center-text">' +
+			'<div class="btn-group">' +
+			actionButtonHTML +
+			'<ul class="dropdown-menu">' +
+			editHTML +
+			completeHTML +
+			cancelHTML +
+			completeOnDemandHTML +
+			'</ul>' +
+			'</div>' +
+			'</td>' +
+			'</tr>';
+
+
+		return html;
+	}
+
+	function createInvoiceElement(childSnapshot) {
+
+		var invoice = childSnapshot.val();
+
+
+		var plus30Days = 60 * 60 * 24 * 30;
+		// var createDate = new Date((invoice.createDate + plus30Days) * 1000);
+
+		var dueDate = invoice.dueDate ? new Date(invoice.dueDate * 1000) : new Date((invoice.createDate + plus30Days) * 1000);
+
+		var total = 0;
+
+		if (invoice.items) {
+			for (var item in invoice.items) {
+				console.log(item);
+
+				var product = invoice.items[item];
+
+				total = total + product.unitPrice * product.qty;
+			}
+		}
+
+		var statusHTML = '';
+		var actionHTML = '';
+
+
+
+		if (invoice.paid && invoice.paid == true) {
+			statusHTML = ' <span class="badge green-background text-white">PAID</span>';
+		} else if (dueDate < new Date().getTime() - (60 * 60 * 24 * 1000)) {
+			statusHTML = ' <span class="badge red-background text-white">OVERDUE</span>';
+		}
+
+
+		if (invoice.paid === true && invoice.paid) {
+
+			var html =
+				'<tr id="' + childSnapshot.key + '">' +
+				'<td>' + childSnapshot.key + statusHTML + '</td>' +
+				'<td class="center-text" id="amount">$' + total + '</td>' +
+				'<td class="center-text">' + $.format.date(dueDate.getTime(), "M/d/yyyy") + '</td>' +
+				'<td class="center-text">' +
+				'<div class="btn-group">' +
+				'<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
+				'Action <span class="caret"></span>' +
+				'</button>' +
+				'<ul class="dropdown-menu">' +
+				'<li><a href="#" class="markUnpaid">Mark Unpaid</a></li>' +
+				'</ul>' +
+				'</div>' +
+				'</td>' +
+				'</tr>';
+
+		} else {
+
+			var html =
+				'<tr id="' + childSnapshot.key + '">' +
+				'<td>' + childSnapshot.key + statusHTML + '</td>' +
+				'<td class="center-text" id="amount">$' + total + '</td>' +
+				'<td class="center-text">' + $.format.date(dueDate.getTime(), "M/d/yyyy") + '</td>' +
+				'<td class="center-text">' +
+				'<div class="btn-group">' +
+				'<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
+				'Action <span class="caret"></span>' +
+				'</button>' +
+				'<ul class="dropdown-menu">' +
+				'<li><a href="./invoices/edit/' + childSnapshot.key + '">Edit</a></li>' +
+				'<li><a href="#" class="markPaid">Mark Paid</a></li>' +
+				'<li role="separator" class="divider"></li>' +
+				'<li><a href="#confirmDeleteInvoice" data-target="#confirmDeleteInvoice" data-toggle="modal" class="deleteinvoice">Delete Invoice</a></li>' +
+				'</ul>' +
+				'</div>' +
+				'</td>' +
+				'</tr>';
+
+		}
+
+
+		return html;
+	}
+
+	$("#jobstable tbody").on("click", "a.incomplete", function (e) {
+
+		var jobid = $(e.target).closest("tr").attr("id");
+		// var custid = $(e.target).closest("tr").attr("custid");
+
+		firebase.database().ref('providerCustomerJobs').child(firebaseUserId).child(customerId).child(jobid).child(
+			"complete").remove();
+		firebase.database().ref('providerCustomerJobs').child(firebaseUserId).child(customerId).child(jobid).child(
+			"completeDate").remove();
+
+		return false;
+	});
+
+	$("#jobstable tbody").on("click", "a.uncancel", function (e) {
+
+		var jobid = $(e.target).closest("tr").attr("id");
+		// var custid = $(e.target).closest("tr").attr("custid");
+
+		firebase.database().ref('providerCustomerJobs').child(firebaseUserId).child(customerId).child(jobid).child(
+			"canceled").remove();
+		firebase.database().ref('providerCustomerJobs').child(firebaseUserId).child(customerId).child(jobid).child(
+			"canceledDate").remove();
+
+		return false;
+	});
+
+	function createMessageElement(user, text, date) {
+
+		var dateString = $.format.date(new Date(date * 1000), "E, M/d/yyyy h:mma");
+
+		var html = '<div>' +
+			'<p class="list-group-item-text center-text" style="clear:both;">' + dateString + '</p>' +
+			'<p class="list-group-item-text message-theirs" style="clear:both; float:left;">' + text + '</p>' +
+			'<br>' +
+			'</div>';
+
+		if (user === firebaseUserId) {
+			html = '<div>' +
+				'<p class="list-group-item-text center-text" style="clear:both;">' + dateString + '</p>' +
+				'<p class="list-group-item-text message-mine" align="right"  style="clear:both; float:right;">' + text +
+				'</p>' +
+				'<br>' +
+				'</div>';
+		}
+
+		// Create the DOM element from the HTML.
+		var div = document.createElement('div');
+		div.innerHTML = html;
+		var postElement = div.firstChild;
+
+		return postElement;
+	}
+
+	$("#proptable tbody").on("click", "a.newJob", function (e) {
+
+		var tr = $(e.target).closest("tr");
+
+		var propertyid = tr.attr("id");
+		var propertyname = tr.attr("address");
+		var rate = tr.attr("rate");
+
+		console.log(rate)
+
+		$("#addressDropdown").text(propertyname);
+		$("#newJobModal").find("#amount").val(rate);
+
+	})
+
+	$("#proptable tbody").on("click", "a.edit", function (e) {
+
+		var tr = $(e.target).closest("tr");
+
+		var propid = tr.attr("id");
+
+		propertyToEdit = propid
+
+		var customerPropertiesRef = firebase.database().ref('providerCustomerProperties').child(firebaseUserId)
+			.child(
+				customerId).child(propid);
+		customerPropertiesRef.once('value', function (snapshot) {
+
+			var property = snapshot.val();
+
+			$("#propertyModal").find("#address").val(property.address);
+			$("#propertyModal").find("#city").val(property.city);
+			$("#propertyModal").find("#state").val(property.state);
+			$("#propertyModal").find("#zip").val(property.zip);
+		});
+
+		$("#propertyModal").modal('toggle');
+
+		return false;
+	});
+
+	$("#proptable tbody").on("click", "a.delete", function (e) {
+
+		var tr = $(e.target).closest("tr");
+
+		var propid = tr.attr("id");
+
+		propertyToDelete = propid;
+
+		$("#confirmDeleteProperty").modal('toggle');
+
+		return false;
+	});
+
+	$("#confirmDeleteProperty").on("click", "#confirmDeletePropertyButton", function (e) {
+
+		firebase.database().ref('providerCustomerProperties').child(firebaseUserId).child(customerId).child(
+			propertyToDelete).remove();
+
+		$("#confirmDeleteProperty").modal('toggle');
+	});
+
+	$("#jobstable tbody").on("click", "a.markComplete", function (e) {
+
+		var jobid = $(e.target).closest("tr").attr("id");
+
+
+		firebase.database().ref('providerCustomerJobs').child(firebaseUserId).child(customerId).child(jobid).child(
+			"complete").set(true);
+		firebase.database().ref('providerCustomerJobs').child(firebaseUserId).child(customerId).child(jobid).child(
+			"completeDate").set(parseInt(new Date() / 1000));
+
+		return false;
+	});
+
+
+	$("#jobstable tbody").on("click", "a.ondemandcomplete", function (e) {
+
+
+		e.preventDefault();
+
+		var jobid = $(e.target).closest("tr").attr("id");
+
+		var OnDemandJobsOnceRef = firebase.database().ref('workingRequests').child('noMarket').child(firebaseUserId).child(
+			jobid);
+
+		OnDemandJobsOnceRef.once('value', function (snapshot) {
+
+			var req = snapshot.val();
+
+			if (req) {
+				req.confirmationPhotoUrl = "xx";
+				req.confirmationComments = "";
+
+				firebase.database().ref('completedRequests').child('noMarket').child(firebaseUserId).child(jobid).set(req);
+			}
+		});
+
+		return false;
+	});
+
+
+	$("#jobstable tbody").on("click", "a.edit", function (e) {
+
+		var jobid = $(e.target).closest("tr").attr("id");
+
+		jobToEdit = jobid;
+
+		var recurringJobId;
+		var customerJobsRef = firebase.database().ref('providerCustomerJobs').child(firebaseUserId).child(
+			customerId).child(
+				jobid);
+		customerJobsRef.once('value', function (snapshot) {
+
+			if (!snapshot.val()) {
+				return;
+			}
+
+			var job = snapshot.val();
+
+			if (job.recurring && job.recurring == true) {
+				$('#editRecurringJob').modal('toggle');
+
+				var recurringJobId = job.recurringJobId != null ? job.recurringJobId : job.recurringJobKey;
+
+				recurringJobToEdit = recurringJobId;
+
+				var recurringJobRef = firebase.database().ref('/providerCustomerRecurringJobs/').child(
+					firebaseUserId).child(
+						customerId).child(recurringJobId);
+				recurringJobRef.once('value', function (rSnapshot) {
+
+					if (!rSnapshot.val()) {
+						return;
+					}
+
+					var recurringJob = rSnapshot.val();
+					var freqVal = recurringJob.frequency + "|" + recurringJob.dayOfWeek;
+
+					$('#frequencyDropdown option[value="' + freqVal + '"]').prop('selected',
+						'selected');
+				})
+			} else {
+				$('#newJobModal').modal('toggle');
+			}
+			$("#newJobModalTitle").text('Edit Job');
+
+			$("#newJobModal").find("#addressDropdown").text(job.address);
+			jobTypeOptionsSelectize[0].selectize.setValue(job.description, job.description);
+			$("#newJobModal").find("#amount").val(job.amount);
+
+			var scheduledDate = new Date(job.scheduledDate * 1000).getTime();
+
+			var scheduledDateString = $.format.date(new Date(job.scheduledDate * 1000).getTime(),
+				"MM/dd/yyyy");
+
+			$("#newJobModal").find('#datetimepickerJobInput').val(scheduledDateString);
+
+			$('#addressDropdown').text(job.address);
+			$('#addressDropdown').prop("disabled", true);
+			$("#addressDropdown").show();
+
+			jobTypeOptionsSelectize[0].selectize.setValue(job.description, job.description);
+			$('#descgroup').show();
+
+			$('#amount').val(job.amount);
+			$('#amountgroup').show();
+
+			var scheduledDateString = $.format.date(new Date(job.scheduledDate * 1000).getTime(),
+				"MM/dd/yyyy");
+			$('#datetimepickerJobInput').val(scheduledDateString);
+			$('#dategroup').show();
+			$('#newJobSave').show();
+		})
+
+		return false;
+	});
+
+
+
+	$('#modifyAllButton').on('click', function (e) {
+		$('#editRecurringJob').modal('toggle');
+		$('#recurringCheck').prop('checked', true);
+		$('#frequencyDropdown').show();
+		$('#recurringgroup').show();
+		$('#newJobSave').show();
+		$('#newJobModal').modal('toggle');
+	})
+
+	$('#modifyOneButton').on('click', function (e) {
+		$('#editRecurringJob').modal('toggle');
+		$('#newJobModal').modal('toggle');
+		recurringJobToEdit = undefined;
+	})
+
+	$("#jobstable tbody").on("click", "a.cancel", function (e) {
+
+		// var jobid = $(e.target).closest("tr").attr("id")
+
+		// firebase.database().ref('providerCustomerJobs').child(firebaseUserId).child(customerId).child(jobid).child("canceled").set(true);
+		// firebase.database().ref('providerCustomerJobs').child(firebaseUserId).child(customerId).child(jobid).child("cancelDate").set(parseInt(new Date() / 1000));
+
+		// return false;
+
+		recurringJobToCancel = undefined;
+		jobToCancel = $(e.target).closest("tr").attr("id");
+
+
+		// var recurringJobId;
+		var jobRef = firebase.database().ref('/providerCustomerJobs/').child(firebaseUserId).child(customerId)
+			.child(
+				jobToCancel);
+		jobRef.once('value', function (snapshot) {
+
+			if (!snapshot.val()) {
+				return;
+			}
+
+			var job = snapshot.val();
+
+			if (job.recurring && job.recurring == true) {
+
+				$('#cancelRecurringJob').modal('toggle');
+
+				recurringJobToCancel = job.recurringJobId;
+
+				var recurringJobRef = firebase.database().ref('/providerCustomerRecurringJobs/').child(
+					firebaseUserId).child(
+						customerId).child(recurringJobToCancel);
+				recurringJobRef.on('value', function (rSnapshot) {
+					if (!rSnapshot.val()) {
+						return;
+					}
+				})
+			} else {
+				$("#confirmCancelJob").modal('toggle');
+			}
+		})
+		return false;
+	});
+
+
+
+
+	$('#cancelAllButton').on('click', function (e) {
+		$('#cancelRecurringJob').modal('toggle');
+		$('#confirmCancelJob').modal('toggle');
+	})
+
+	$('#cancelOneButton').on('click', function (e) {
+		$('#cancelRecurringJob').modal('toggle');
+		$('#confirmCancelJob').modal('toggle');
+		recurringJobToCancel = undefined;
+	})
+
+	$("body").on("click", "#confirmCancelJobButton", function (e) {
+
+		firebase.database().ref('providerCustomerJobs').child(firebaseUserId).child(customerId).child(jobToCancel)
+			.child(
+				"canceled").set(true);
+		firebase.database().ref('providerCustomerJobs').child(firebaseUserId).child(customerId).child(jobToCancel)
+			.child(
+				"canceledDate").set(parseInt(new Date().getTime() / 1000));
+
+		if (recurringJobToCancel) {
+
+			var endDate;
+			var jobToCancelDateRef = firebase.database().ref('providerCustomerJobs').child(firebaseUserId).child(
+				customerId).child(
+					jobToCancel).child('scheduledDate');
+			jobToCancelDateRef.once('value')
+				.then(function (snapshot) {
+					endDate = snapshot.val();
+					console.log('end date: ' + endDate);
+
+					var providerCustomerJobsRef = firebase.database().ref('providerCustomerJobs').child(
+						firebaseUserId).child(
+							customerId);
+					providerCustomerJobsRef.once('value', function (jobssnapshot) {
+
+						jobssnapshot.forEach(function (jobsnapshot) {
+							var job = jobsnapshot.val();
+							if (job.scheduledDate == endDate) {
+								providerCustomerJobsRef.child(jobsnapshot.key).child(
+									'canceled').set(true);
+							}
+							if (job.recurringJobId == recurringJobToCancel && job
+								.scheduledDate > endDate) {
+								providerCustomerJobsRef.child(jobsnapshot.key).set(null);
+							}
+						})
+					})
+					firebase.database().ref('providerCustomerRecurringJobs').child(firebaseUserId).child(
+						customerId).child(
+							recurringJobToCancel).child("active").set(false);
+					firebase.database().ref('providerCustomerRecurringJobs').child(firebaseUserId).child(
+						customerId).child(
+							recurringJobToCancel).child("endDate").set(endDate);
+				})
+		}
+
+		$("#confirmCancelJob").modal('toggle');
+
+		return false;
+	});
+
+	$("#invtable tbody").on("click", "a.markPaid", function (e) {
+
+		var invoiceid = $(e.target).closest("tr").attr("id")
+
+		var amount = $(e.target).closest("tr").find('#amount').text().replace('$', '');
+
+		var updates = {
+			"paid" : true,
+			"paidOn" : parseInt(new Date().getTime() / 1000),
+			"paymentAmount" : amount
+		};
+
+		firebase.database().ref('providerCustomerInvoices').child(firebaseUserId).child(invoiceid).update(updates);
+
+		return false;
+	});
+
+
+
+	$("#invtable tbody").on("click", "a.deleteinvoice", function (e) {
+
+		invoiceToDelete = $(e.target).closest("tr").attr("id")
+
+		return true;
+	});
+
+
+	$("#invtable tbody").on("click", "a.markUnpaid", function (e) {
+
+
+		var invoiceid = $(e.target).closest("tr").attr("id");
+		firebase.database().ref('providerCustomerInvoices').child(firebaseUserId).child(invoiceid).child("paid").set(null);
+		firebase.database().ref('providerCustomerInvoices').child(firebaseUserId).child(invoiceid).child("paidOn").set(null);
+
+
+		return false;
+	});
+
+
+	$("#confirmDeleteInvoiceButton").click(function () {
+		firebase.database().ref('providerCustomerInvoices').child(firebaseUserId).child(invoiceToDelete).remove();
+		$("#confirmDeleteInvoice").modal('toggle');
+	});
+
+
+</script>
+
+<script>
+	$('#inviteButton').click(function () {
+
+		firebase.auth().currentUser.getIdToken( /* forceRefresh */ true).then(function (idToken) {
+
+			var body = {
+				token: idToken,
+				customerId: customerId
+			};
+
+			$.post("customers/invite", body)
+				.done(function (data) {
+
+					console.log(data);
+
+					if (data === 'success') {
+						$('#lbInviteSuccess').show();
+					} else {
+
+					}
+				})
+				.fail(function () {
+
+				})
+				.always(function () {
+					//this always runs
+				});
+		}).catch(function (error) {
+			// Handle error
+
+		});
+	});
+
+	$('#newInvoice').click(function () {
+		var newInvoiceNumber = invoiceNumber;
+
+		firebase.database().ref('providerCustomerInvoices').child(firebaseUserId).child(newInvoiceNumber).set({
+			createDate: Math.round(new Date().getTime() / 1000),
+			customerId: customerId,
+			customerName: customerName
+		})
+			.then(function () {
+				console.log('Synchronization succeeded');
+				window.location = "../invoices/edit/" + newInvoiceNumber;
+			})
+			.catch(function (error) {
+				console.log('Synchronization failed');
+			});
+
+		return true;
+	});
+
+	$('#editCustNameSave').click(function () {
+
+		var editFirstName = $('#editCustNameModal').find('#editCustNameFirst').val();
+		var editLastName = $('#editCustNameModal').find('#editCustNameLast').val();
+
+		$("#editCustNameModal").modal('toggle');
+
+		firebase.database().ref('providerCustomers').child(firebaseUserId).child(customerId)
+			.update({
+				firstName: editFirstName,
+				lastName: editLastName
+			})
+			.then(function () {
+				console.log('Synchronization succeeded');
+				//window.location.href = "./customers/detail/" + customerId;
+			})
+			.catch(function (error) {
+				console.log('Synchronization failed');
+			});
+	});
+
+	$('#propertySave').click(function () {
+
+		var address = $('#propertyModal').find('#address').val();
+		var city = $('#propertyModal').find('#city').val();
+		var state = $('#propertyModal').find('#state').val();
+		var zip = $('#propertyModal').find('#zip').val();
+		var lat = $('#propertyModal').find('#lat').val();
+		var lng = $('#propertyModal').find('#lng').val();
+
+		$("#propertyModal").modal('toggle');
+
+		if (propertyToEdit) {
+			//editing existing property
+
+			firebase.database().ref('providerCustomerProperties').child(firebaseUserId).child(customerId).child(
+				propertyToEdit)
+				.update({
+					address: address,
+					city: city,
+					state: state,
+					zip: zip,
+					lat: parseFloat(lat),
+					lng: parseFloat(lng)
+				})
+				.then(function () {
+					console.log('Synchronization succeeded');
+					//window.location.href = "./customers/detail/" + customerId;
+				})
+				.catch(function (error) {
+					console.log('Synchronization failed');
+				});
+		} else {
+			//new property
+			firebase.database().ref('providerCustomerProperties').child(firebaseUserId).child(customerId).push({
+				address: address,
+				city: city,
+				state: state,
+				zip: zip,
+				lat: (lat == "") ? 0.001 : parseFloat(lat),
+				lng: (lng == "") ? 0.001 : parseFloat(lng),
+				createDate: Math.round(new Date().getTime() / 1000)
+			})
+				.then(function () {
+					console.log('Synchronization succeeded');
+					//window.location.href = "./customers/detail/" + customerId;
+				})
+				.catch(function (error) {
+					console.log('Synchronization failed');
+				});
+		}
+	});
+
+	$('#autoInvoiceSetting').change(function () {
+
+		var setting = $(this).val();
+
+		firebase.database().ref('providerCustomers').child(firebaseUserId).child(customerId).child(
+			'autoInvoiceSetting').set(
+				setting);
+	});
+
+	$('#calendaricon').click(function () {
+		console.log('sasasas');
+		//$('#datetimepickerJob').show();
+		$('#datetimepickerJobInput').datetimepicker('show');
+	});
+
+	$('#newJobSave').click(function () {
+
+		$('#jobForm').validator('validate');
+
+		if ($('#jobForm').data('bs.validator').validate().hasErrors()) {
+			return;
+		}
+
+		var description = $('#description').val();
+		var amount = $("#newJobModal").find("#amount").val();
+		var address = $("#addressDropdown").text();
+
+		var parts = $('#datetimepickerJobInput').val().split('/');
+		var scheduledDate = new Date(parts[2], parts[0] - 1, parts[1]);
+
+		var recurring = $('#recurringCheck').is(':checked');
+
+		// alert("recurring: " + recurring);
+
+		var frequency, day;
+		if (recurring == true) {
+			$('.frequency').each(function () {
+				frequency = parseInt(this.value.split('|')[0]);
+				day = parseInt(this.value.split('|')[1]);
+			});
+		} else {
+			frequency = null;
+			day = null;
+		}
+
+		var customerPropertiesRef = firebase.database().ref('providerCustomerProperties').child(firebaseUserId)
+			.child(
+				customerId);
+		customerPropertiesRef.once('value', function (snapshot) {
+
+			var didFindProp = false;
+			var foundProp, property;
+
+			snapshot.forEach(function (childSnapshot) {
+
+				property = childSnapshot.val()
+
+				if (address == property.address) {
+					didFindProp = true
+					foundProp = property;
+				}
+			});
+
+			if (didFindProp == false) {
+				$("#addressDropdown").text('Choose an address...');
+				return;
+			}
+
+			if (jobToEdit) {
+				//editing a recurring job
+				if (recurringJobToEdit) {
+					if (recurring) {
+						firebase.database().ref('providerCustomerRecurringJobs').child(firebaseUserId)
+							.child(customerId).child(
+								recurringJobToEdit).update({
+									description: description,
+									amount: amount,
+									startDate: scheduledDate.getTime() / 1000,
+									frequency: frequency,
+									dayOfWeek: day,
+									active: recurring
+								})
+							.then(function () {
+								console.log('Synchronization succeeded');
+								// $("#newJobModal").modal('toggle');
+								recurringJobToEdit = undefined;
+							})
+							.catch(function (error) {
+								console.log('Synchronization failed');
+							});
+					} else {
+						firebase.database().ref('providerCustomerRecurringJobs').child(firebaseUserId)
+							.child(customerId).child(
+								recurringJobToEdit).update({
+									description: description,
+									amount: amount,
+									endDate: scheduledDate.getTime() / 1000,
+									active: recurring
+								})
+							.then(function () {
+								console.log('Synchronization succeeded');
+								// $("#newJobModal").modal('toggle');
+								recurringJobToEdit = undefined;
+							})
+							.catch(function (error) {
+								console.log('Synchronization failed');
+							});
+					}
+				} else {
+					// editing a single job
+					console.log('EDITING SINGLE JOB');
+
+					if (recurring) {
+						console.log('CREATING RECURRING JOB...');
+						var newJob = {
+							description: description,
+							amount: amount,
+							startDate: scheduledDate.getTime() / 1000,
+							createDate: Math.round(new Date().getTime() / 1000),
+							address: address,
+							city: foundProp.city,
+							state: foundProp.state,
+							zip: foundProp.zip,
+							customerName: $('.custButton').text(),
+							lat: parseFloat(foundProp.lat),
+							lng: parseFloat(foundProp.lng),
+							frequency: frequency,
+							dayOfWeek: day,
+							active: recurring
+						}
+
+						var providerCustomerRecurringJobRef = firebase.database().ref(
+							'providerCustomerRecurringJobs').child(
+								firebaseUserId).child(customerId).push(newJob)
+							.then(function () {
+								console.log('Synchronization succeeded');
+								firebase.database().ref('providerCustomerJobs').child(firebaseUserId)
+									.child(customerId).child(jobToEdit).set(
+										null);
+							})
+							.catch(function (error) {
+								console.log('Synchronization failed');
+							});
+					} else {
+						firebase.database().ref('providerCustomerJobs').child(firebaseUserId).child(
+							customerId).child(jobToEdit).update({
+								description: description,
+								amount: amount,
+								scheduledDate: scheduledDate.getTime() / 1000
+							})
+							.then(function () {
+								console.log('Synchronization succeeded');
+							})
+							.catch(function (error) {
+								console.log('Synchronization failed');
+							});
+					}
+				}
+			} else {
+				// new job save
+				if ($('#recurringCheck').is(':checked')) {
+
+					firebase.database().ref('providerCustomerRecurringJobs').child(firebaseUserId).child(
+						customerId).push({
+							description: description,
+							amount: amount,
+							startDate: scheduledDate.getTime() / 1000,
+							createDate: Math.round(new Date().getTime() / 1000),
+							address: foundProp.address,
+							city: foundProp.city,
+							state: foundProp.state,
+							zip: foundProp.zip,
+							customerName: customerName,
+							lat: parseFloat(foundProp.lat),
+							lng: parseFloat(foundProp.lng),
+							frequency: frequency,
+							dayOfWeek: day,
+							active: true
+						})
+						.then(function () {
+							console.log('Synchronization succeeded');
+						})
+						.catch(function (error) {
+							console.log('Synchronization failed');
+						});
+				} else {
+					firebase.database().ref('providerCustomerJobs').child(firebaseUserId).child(customerId)
+						.push({
+							description: description,
+							amount: amount,
+							scheduledDate: scheduledDate.getTime() / 1000,
+							zip: zip,
+							createDate: Math.round(new Date().getTime() / 1000),
+							address: foundProp.address,
+							city: foundProp.city,
+							state: foundProp.state,
+							zip: foundProp.zip,
+							customerName: customerName,
+							lat: foundProp.lat,
+							lng: foundProp.lng
+						})
+						.then(function () {
+							console.log('Synchronization succeeded');
+							//window.location.href = "./customers/detail/" + customerId;
+						})
+						.catch(function (error) {
+							console.log('Synchronization failed');
+						});
+				}
+			}
+
+			$("#newJobModal").modal('toggle');
+		});
+	});
+
+	$('body').on('click', 'a.jobAddressOption', function (e) {
+		//address selected
+		var propertyId = $(this).attr("id");
+		var propertyName = $(this).text();
+
+		$("#addressDropdown").dropdown('toggle');
+		$("#addressDropdown").text($(this).text());
+
+		return false;
+	});
+
+
+	$('body').on('click input focus', '#phone', function (e) {
+		//entered phone div
+		$("#phone").inputmask("(999) 999-9999");
+	});
+
+	$("body").on("click input focus", "#email", function (e) {
+		$('#email').text('');
+
+		$("#email").inputmask({
+			mask: "*{1,50}",
+			definitions: {
+				'*': {
+					validator: "[0-9A-Za-z!#$%&'*+/=?^'{|}~@.\-]",
+					casing: "lower"
+				}
+			}
+		});
+	});
+
+	$("body").on("click input focus", "#nickname", function (e) {
+		$('#nickname').text("");
+		$("#nickname").inputmask({
+			mask: "*{1,20}",
+			greedy: false,
+			definitions: {
+				'*': {
+					validator: "[0-9A-Za-z!#$%&'*+/=?^`{|}~]",
+
+				}
+			}
+		});
+	});
+
+	$('body').on('keydown', '#phone', function (e) {
+		if (event.keyCode >= 48 || event.keyCode <= 57) {
+			//number keys
+			if (event.keyCode == 13) {
+				//enter key
+				$(e.target).blur();
+
+				return false;
+			}
+
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	$('body').on('blur paste', '#phone', function (e) {
+
+		var currentVal = $(e.target).text();
+
+		if (currentVal.length > 0 && isPhone(currentVal)) {
+			$(e.target).text(currentVal);
+			firebase.database().ref('providerCustomers').child(firebaseUserId).child(customerId).child("phone")
+				.set(currentVal);
+		} else {
+			$("#phone").inputmask("remove");
+			$(e.target).text('Click to add phone number...');
+
+			firebase.database().ref('providerCustomers').child(firebaseUserId).child(customerId).child("phone")
+				.remove();
+		}
+
+		console.log('exit');
+	});
+
+	// $('body').on('click input focus', '#email', function (e) {
+	// 	//entered email div
+	// 	$("#email").text(" ");
+	// 	$("#email").addClass("editable-indicator")
+
+
+	// });
+
+	// $('body').on('keydown', '#email', function (e) {
+
+	// 	if (event.keyCode == 13) {
+	// 		//enter key
+	// 		$(e.target).blur();
+
+	// 		return false;
+	// 	}
+
+	// 	return true;
+	// });
+
+	$('body').on('blur paste', '#email', function (e) {
+
+		var currentVal = $(e.target).text();
+
+		console.log("currentVal: " + currentVal);
+
+		if (currentVal.length > 0 && isEmail(currentVal) == true) {
+			$(e.target).text(currentVal);
+			firebase.database().ref('providerCustomers').child(firebaseUserId).child(customerId).child("email")
+				.set(currentVal);
+		} else {
+
+			$("#email").inputmask("remove");
+			$(e.target).text('Click to add email...');
+
+			firebase.database().ref('providerCustomers').child(firebaseUserId).child(customerId).child("email")
+				.remove();
+		}
+
+		console.log('exit');
+	});
+
+	// EDIT TAG
+	$('body').on('blur paste', '#nickname', function (e) {
+		var currentVal = $(e.target).text();
+
+		console.log("currentVal: " + currentVal);
+
+		if (currentVal.length > 0 && isNickname(currentVal)) {
+			$(e.target).text(currentVal);
+			firebase.database().ref('providerCustomers').child(firebaseUserId).child(customerId).child("nickname")
+				.set(currentVal);
+		} else {
+			$("#nickname").inputmask("remove");
+			$(e.target).text('Click to add tag...');
+
+			firebase.database().ref('providerCustomers').child(firebaseUserId).child(customerId).child("nickname")
+				.remove();
+		}
+
+
+	});
+
+	$('#proptablebody').on('click', 'span.lotSize', function (e) {
+		//entered standard rate div
+
+		var currentVal = $(e.target).text().replace(' sq/ft', '');
+
+		if (parseInt(currentVal) > 0) {
+			$(e.target).text(currentVal);
+			placeCaretAtEnd(e.target);
+		} else {
+			$(e.target).text('');
+		}
+	});
+
+	$('#proptablebody').on('keydown', 'span.lotSize', function (e) {
+		if (event.keyCode >= 48 || event.keyCode <= 57) {
+			//number keys
+			if (event.keyCode == 13) {
+				//enter key
+				$(e.target).blur();
+
+				return false;
+			}
+
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	$('#proptablebody').on('blur paste', 'span.lotSize', function (e) {
+
+		var currentVal = $(e.target).text();
+		var parentTRId = $(e.target).closest('tr').attr('id');
+
+		if (parseInt(currentVal) > 0) {
+			$(e.target).text(currentVal + ' sq/ft');
+			firebase.database().ref('providerCustomerProperties').child(firebaseUserId).child(customerId).child(
+				parentTRId).child(
+					'lotSize').set(parseInt(currentVal));
+		} else {
+			$(e.target).text('--');
+
+			firebase.database().ref('providerCustomerProperties').child(firebaseUserId).child(customerId).child(
+				parentTRId).child(
+					'lotSize').remove();
+		}
+
+		console.log('exit');
+	});
+
+	$('#proptablebody').on('click', 'span.stdRate', function (e) {
+		//entered standard rate div
+
+		var currentVal = $(e.target).text().replace('$', '');
+
+		if (parseInt(currentVal) > 0) {
+			$(e.target).text(currentVal);
+			placeCaretAtEnd(e.target);
+		} else {
+			$(e.target).text('');
+		}
+	});
+
+	$('#proptablebody').on('keydown', 'span.stdRate', function (e) {
+		if (event.keyCode >= 48 || event.keyCode <= 57) {
+			//number keys
+			if (event.keyCode == 13) {
+				//enter key
+				$(e.target).blur();
+
+				return false;
+			}
+
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	$('#proptablebody').on('blur paste', 'span.stdRate', function (e) {
+
+		var currentVal = $(e.target).text();
+		var parentTRId = $(e.target).closest('tr').attr('id');
+
+		if (parseInt(currentVal) > 0) {
+			$(e.target).text('$' + currentVal);
+			firebase.database().ref('providerCustomerProperties').child(firebaseUserId).child(customerId).child(
+				parentTRId).child(
+					'standardRate').set(currentVal);
+		} else {
+			$(e.target).text('--');
+
+			firebase.database().ref('providerCustomerProperties').child(firebaseUserId).child(customerId).child(
+				parentTRId).child(
+					'standardRate').remove();
+		}
+
+		console.log('exit');
+	});
+
+
+	$('#sendMessage').click(function () {
+
+		var text = $("#messageText").val();
+
+		if (text.length <= 0) {
+			return;
+		}
+
+		var thisChatRef = firebase.database().ref('chats/' + chatId + '/messages');
+
+		// Generate a reference to a new location and add some data using push()
+		var newPostRef = thisChatRef.push({
+			user: firebaseUserId,
+			text: text,
+			sent: Math.floor(Date.now() / 1000)
+		});
+
+		var updates = {};
+
+		updates['/chats/' + chatId + '/lastToSend'] = firebaseUserId;
+		updates['/chats/' + chatId + '/lastMessage'] = Math.floor(Date.now() / 1000);
+		updates['/chats/' + chatId + '/lastText'] = text;
+		updates['/chats/' + chatId + '/userName'] = customerName;
+		updates['/chats/' + chatId + '/providerName'] = providerName;
+
+		firebase.database().ref().update(updates);
+
+		$("#messageText").val("");
+	});
+
+
+	$(document).ready(function () {
+		$('#datetimepickerJobInput').datepicker({
+			beforeShow: function () {
+				setTimeout(function () {
+					$('.ui-datepicker').css('z-index', 99999999999999);
+				}, 0);
+			}
+		});
+		// .datetimepicker({
+		// 	format: 'MM/DD/YYYY',
+		// 	allowInputToggle: true
+		// });
+	});
+
+	function placeCaretAtEnd(el) {
+		el.focus();
+		if (typeof window.getSelection != "undefined" &&
+			typeof document.createRange != "undefined") {
+			var range = document.createRange();
+			range.selectNodeContents(el);
+			range.collapse(false);
+			var sel = window.getSelection();
+			sel.removeAllRanges();
+			sel.addRange(range);
+		} else if (typeof document.body.createTextRange != "undefined") {
+			var textRange = document.body.createTextRange();
+			textRange.moveToElementText(el);
+			textRange.collapse(false);
+			textRange.select();
+		}
+	}
+
+	function clearPropertyModal() {
+		$('#propertyModal').find('#address').val('');
+		$('#city').val('');
+		$('#state').val('');
+		$('#zip').val('');
+		$('#lat').val('');
+		$('#lng').val('');
+	}
+
+	function clearJobModal() {
+		$("#newJobModal").find("#addressDropdown").text('Choose an address...');
+		jobTypeOptionsSelectize[0].selectize.setValue('', '');
+		$("#newJobModal").find("#amount").val('');
+		$("#newJobModal").find('#datetimepickerJobInput').val('');
+		$('#frequencyDropdown').hide();
+		$('#recurringCheck').prop('checked', false);
+		$('#frequencyDropdown option:eq(0)').prop('selected', true);
+	}
+
+	$('#recurringCheck').click(function () {
+		if ($('#recurringCheck').is(':checked')) {
+			$('#frequencyDropdown').show();
+		} else {
+			$('#frequencyDropdown').hide();
+		}
+	})
+
+	var input = document.getElementById('address');
+	var options = {
+		types: ['address']
+	};
+
+	autocomplete = new google.maps.places.Autocomplete(input, options);
+
+	google.maps.event.addListener(autocomplete, 'place_changed', function () {
+		//USER SELECTED PLACE
+		fillInAddress();
+	});
+
+	function fillInAddress() {
+		// Get the place details from the autocomplete object.
+		console.log("address selected");
+		var place = autocomplete.getPlace();
+
+		var street_number = '';
+		var route = '';
+		var city = '';
+		var state = '';
+		var zip = '';
+
+		jQuery.each(place.address_components, function (k, component) {
+			jQuery.each(component.types, function (k2, v2) {
+				//components[v2]=v1.long_name
+
+				if (component.types.includes('street_number')) {
+					street_number = component.long_name;
+				} else if (component.types.includes('route')) {
+					route = component.long_name;
+				} else if (component.types.includes('locality')) {
+					city = component.long_name;
+				} else if (component.types.includes('administrative_area_level_1')) {
+					state = component.long_name;
+				} else if (component.types.includes('postal_code')) {
+					zip = component.long_name;
+				}
+
+				console.log(component);
+
+				console.log(component.long_name);
+			});
+		});
+
+		$('#propertyModal').find('#address').val(street_number + ' ' + route);
+		$('#city').val(city);
+		$('#state').val(state);
+		$('#zip').val(zip);
+		$('#lat').val(place.geometry.location.lat());
+		$('#lng').val(place.geometry.location.lng());
+	}
+
+	var jobTypeOptionsSelectize = $('#description').selectize({
+		persist: false,
+		maxItems: 1,
+		valueField: 'name',
+		labelField: 'name',
+		searchField: ['name'],
+		options: [],
+		render: {
+			item: function (item, escape) {
+				return '<div>' +
+					(item.name ? '<span class="name">' + escape(item.name) + '</span>' : '') +
+					'</div>';
+			},
+			option: function (item, escape) {
+				var label = item.name || item.email;
+				return '<div>' +
+					'<span class="label blue" style="color:black; font-size:1.2em; line-height:30px;">' +
+					escape(label) + '</span>' +
+					'</div>';
+			},
+		},
+		create: function (input) {
+
+			firebase.database().ref('providerJobTypes').child(firebaseUserId).child(input).set(new Date()
+				.getTime() / 1000);
+
+			return {
+				name: input
+			};
+		}
+	});
+
+	var propertyToEdit, propertyToDelete, jobToEdit, recurringJobToEdit, recurringJobToCancel, jobToCancel;
+
+	function isEmail(email) {
+		var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+		return regex.test(email);
+	}
+
+	function isPhone(phone) {
+		var regex = /^\(\d{3}\) \d{3}-\d{4}$/;
+		return regex.test(phone);
+	}
+
+	function isNickname(nickname) {
+		var regex = /^([(a-zA-Z0-9#]){1,20}/;
+
+		return regex.test(nickname)
+
+	}
+
+	function setTwoNumberDecimal(event) {
+		this.value = parseFloat(this.value).toFixed(2);
+	}
+
+	var invoiceToDelete;
+
+
+	// SAVE CUSTOMER NOTES
+	$("#textarea-customer-notes-id").on("focus click", function (e) {
+
+		$(".toggle-click-save-customer-notes").show();
+
+	});
+
+
+	$(".save-customer-notes").click(function (e) {
+
+		var textVal = $("#textarea-customer-notes-id").val();
+
+		firebase.database().ref('providerCustomers').child(firebaseUserId).child(customerId)
+
+			.update({
+				customerNotes: textVal
+
+			})
+			.then(function () {
+				console.log('Synchronization succeeded');
+				$(".toggle-click-save-customer-notes").hide();
+			})
+			.catch(function (error) {
+				console.log('Synchronization failed');
+			});
+
+		return false;
+	});
+
+
+	//  OPEN THE EDIT PROPERTY NOTES MODAL 
+	$("#proptable tbody").on("click", "a.edit-property-notes-modal-button", function (e) {
+
+		var tr = $(e.target).closest("tr");
+		var propertyNotesId = tr.attr("id");
+		$(".modal-body ").val(propertyNotesId);
+
+		var propertyNoteRef = firebase.database().ref("providerCustomerProperties").child(firebaseUserId).child(customerId).child(propertyNotesId);
+
+		$(".modal-body #property-id").val(propertyNotesId);
+
+		propertyNoteRef.once("value", function (snapshot) {
+			var propertyNotes = snapshot.child("propertyNotes").val();
+			var address = snapshot.child("address").val();
+			var city = snapshot.child("city").val();
+			var state = snapshot.child("state").val();
+			var zip = snapshot.child("zip").val();
+
+			var propertyAddr = address + " " + city + ", " + state + " " + zip;
+
+			$(".modal").find(".edit-property-notes-header").html(propertyAddr);
+			$(".modal-body").find("#textarea-property-notes-id").html(propertyNotes);
+
+			return false;
+		});
+	});
+
+	$(".save-property-notes").click(function (e) {
+
+		var propid = $('#property-id').val();
+
+		var textVal = $("#textarea-property-notes-id").val();
+
+		firebase.database().ref("providerCustomerProperties").child(firebaseUserId).child(customerId).child(propid)
+			.update({
+				propertyNotes: textVal
+			})
+			.then(function () {
+				$('#editPropertyNotesModal').modal('toggle');
+
+				console.log('Synchronization succeeded');
+			})
+			.catch(function (error) {
+				console.log('Synchronization failed');
+			});
+
+		return false;
+	});
+
+
+
+</script>
+
+<% include ../partials/private_material_footer.ejs %>

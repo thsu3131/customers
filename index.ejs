@@ -1,0 +1,177 @@
+<% include ../partials/private_material_header.ejs %>
+<div class="row">
+	<div class="col-lg-12">
+		<div class="card">
+			<div class="card-header card-header-warning">
+				<h4 class="card-title">Customers
+					<button class="btn btn-fab btn-lg btn-fab-mini btn-round btn-warning pull-right" id="addButton">
+						<i class="material-icons">add</i>
+					</button>
+				</h4>
+			</div>
+			<div class="card-body">
+				<table class="table table-condensed table-hover" id="custtable">
+					<thead>
+						<tr>
+							<th></th>
+							<th>Name</th>
+							<th>Tag 
+								<span data-html="true" data-toggle="tooltip" data-placement="top"
+							title="
+								Tags help you identify your customers and group them however you want.<br />
+							Hint: Neighborhood, nickname, etc..."> 
+							    <i class="fas fa-question-circle green"></i>
+							    </span>
+						    </th>
+							<th>Phone</th>
+							<th>Email</th>
+							<th class="text-center">Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Confirm Delete Customer -->
+<div class="modal fade" id="confirmDeleteCustomer" role="dialog" aria-hidden="true" tabindex="-1" data-toggle="modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Delete This Customer?</h4>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-danger" id="confirmDeleteCustomerButton">Delete</button>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="../vendor/jquery/jquery.min.js"></script>
+
+<script>
+
+	$('.navbar-wrapper').text('Customers');
+	$('.nav-item.customers').addClass('active');
+
+	var firebaseUserId;// = "w283mtPOqNXwvrfe56rdixn75If2";
+
+	firebase.auth().onAuthStateChanged(function (user) {
+		if (user) {
+			// User is signed in.
+			firebaseUserId = user.uid;
+
+			startDatabaseQueries()
+		} else {
+			// No user is signed in.
+			console.log('no user logged in');
+		}
+	});
+
+	$(document).ready(function () {
+		//opt in to tooltips
+		$('[data-toggle="tooltip"]').tooltip();
+
+		$('body').tooltip({
+			selector: '[rel=tooltip]'
+		});
+	});
+
+	function startDatabaseQueries() {
+		var customersRef = firebase.database().ref('providerCustomers').child(firebaseUserId).orderByChild('lastName');
+		customersRef.on('value', function (snapshot) {
+			console.log('customers gathered');
+
+			var customers = [];
+
+			//remove all rows
+			$('#custtable tbody tr').remove()
+
+			snapshot.forEach(function (childSnapshot) {
+
+				var customer = childSnapshot.val();
+
+				if (customer.deleted == true) {
+					return;
+				}
+
+				customers.push(childSnapshot);
+			});
+
+			customers.sort(function (a, b) {
+
+				var aVal = a.val();
+				var bVal = b.val();
+
+				var aLastName = aVal.lastName ? aVal.lastName.toLowerCase() : '';
+				var bLastName = bVal.lastName ? bVal.lastName.toLowerCase() : '';
+
+				var aFirstName = aVal.firstName ? aVal.firstName.toLowerCase() : '';
+				var bFirstName = bVal.firstName ? bVal.firstName.toLowerCase() : '';
+
+				return aLastName.localeCompare(bLastName) || aFirstName.localeCompare(bFirstName);
+			});
+
+
+			customers.forEach(function (customerSnap) {
+
+				$('#custtable').find('tbody').append(createCustomerElement(customerSnap));
+			});
+		});
+	}
+
+	$('#addButton').click(function () {
+		window.location.href = "./customers/edit";
+	});
+
+	function createCustomerElement(childSnapshot) {
+
+		var customer = childSnapshot.val();
+
+		var custNickname = customer.nickname;
+		if (custNickname === undefined) custNickname = "";
+
+		var html =
+			'<tr id="' + childSnapshot.key + '" style="cursor:pointer;">' +
+			'<td>' + (customer.lastName || '') + ', ' + (customer.firstName || '') + '</td>' +
+			'<td>' + custNickname  + '</td>' +
+			'<td>' + (customer.phone || '') + '</td>' + 
+			'<td>' + (customer.email || '') + '</td>' +
+			'<td class="text-center"><a href="#" class="trash" data-toggle="modal" ><i class="fa fa-trash text-center" aria-hidden="true"></i></a></td>' +
+			'</tr>';
+
+		return html;
+	}
+
+	$("#custtable tbody").on("click", "a.trash", function (e) {
+
+		custToDelete = $(e.target).closest("tr").attr("id");
+
+		$("#confirmDeleteCustomer").modal('toggle');
+
+		e.stopPropagation();
+
+		return false;
+	});
+
+	$("#custtable tbody").on("click", "tr", function (e) {
+
+		var custId = e.currentTarget.id;
+
+		window.location.href = "./customers/" + custId;
+	});
+
+	$('#confirmDeleteCustomerButton').click(function () {
+
+		firebase.database().ref('providerCustomers').child(firebaseUserId).child(custToDelete).child('deleted').set(true);
+
+		$("#confirmDeleteCustomer").modal("toggle");
+	});
+
+	var custToDelete;
+
+</script>
+
+<% include ../partials/private_material_footer.ejs %>
